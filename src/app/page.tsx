@@ -12,17 +12,21 @@ import { UserApps } from "@/components/user-apps";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PromptInputTextareaWithTypingAnimation } from "@/components/prompt-input";
 import Link from "next/link";
+import { FrameworkSelector } from "@/components/framework-selector";
 
 const queryClient = new QueryClient();
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
+  const [framework, setFramework] = useState("nextjs");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    router.push(`/app/new?message=${encodeURIComponent(prompt)}`);
+    router.push(
+      `/app/new?message=${encodeURIComponent(prompt)}&template=${framework}`
+    );
   };
 
   return (
@@ -63,6 +67,12 @@ export default function Home() {
             <div className="w-full max-w-2xl mx-auto px-4">
                  <div className="w-full bg-black/50 border border-neutral-700 rounded-md relative z-10 backdrop-blur-sm">
                   <PromptInput
+                    leftSlot={
+                      <FrameworkSelector
+                        value={framework}
+                        onChange={setFramework}
+                      />
+                    }
                     isLoading={isLoading}
                     value={prompt}
                     onValueChange={setPrompt}
