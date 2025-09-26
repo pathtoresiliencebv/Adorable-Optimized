@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { PromptInput, PromptInputActions } from "@/components/ui/prompt-input";
-import { FrameworkSelector } from "@/components/framework-selector";
 import Image from "next/image";
 import LogoSvg from "@/logo.svg";
 import { useState } from "react";
@@ -12,77 +11,69 @@ import { UserButton } from "@stackframe/stack";
 import { UserApps } from "@/components/user-apps";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PromptInputTextareaWithTypingAnimation } from "@/components/prompt-input";
+import { Code2 } from "lucide-react";
 
 const queryClient = new QueryClient();
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
-  const [framework, setFramework] = useState("nextjs");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async () => {
     setIsLoading(true);
-
-    router.push(
-      `/app/new?message=${encodeURIComponent(prompt)}&template=${framework}`
-    );
+    router.push(`/app/new?message=${encodeURIComponent(prompt)}`);
   };
 
   return (
     <QueryClientProvider client={queryClient}>
-      <main className="min-h-screen p-4 relative">
-        <div className="flex w-full justify-between items-center">
-          <h1 className="text-lg font-bold flex-1 sm:w-80">
-            <a href="https://www.qreatify.io">Qreatify.io</a>
-          </h1>
-          <Image
-            className="dark:invert mx-2"
-            src={LogoSvg}
-            alt="Qreatify  Logo"
-            width={36}
-            height={36}
-          />
-          <div className="flex items-center gap-2 flex-1 sm:w-80 justify-end">
-            <UserButton />
-          </div>
+      <main className="min-h-screen p-4 relative bg-[#111111] text-white">
+        <div
+          className="absolute inset-0 z-0 opacity-20"
+          style={{
+            backgroundImage:
+              "linear-gradient(white 2px, transparent 2px), linear-gradient(90deg, white 2px, transparent 2px)",
+            backgroundSize: "50px 50px",
+          }}
+        ></div>
+        <div className="absolute top-4 right-4 z-20">
+          <UserButton />
         </div>
 
-        <div>
-          <div className="w-full max-w-lg px-4 sm:px-0 mx-auto flex flex-col items-center mt-16 sm:mt-24 md:mt-32 col-start-1 col-end-1 row-start-1 row-end-1 z-10">
-            <p className="text-neutral-600 text-center mb-6 text-3xl sm:text-4xl md:text-5xl font-bold">
-              Let AI Cook
+        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen text-center">
+          <div className="absolute top-8 flex items-center gap-2 text-sm bg-black px-3 py-1 rounded-full">
+            <Code2 className="w-4 h-4" />
+            <span>Powered by Expo & NativeWind</span>
+          </div>
+
+          <div className="w-full max-w-2xl px-4 mx-auto mt-[-100px]">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tighter mb-4">
+              Prompt to Mobile App
+            </h1>
+            <p className="text-lg text-neutral-400 mb-12">
+              Chat and get production-ready React Native App with AI.
             </p>
 
-            <div className="w-full relative my-5">
-              <div className="relative w-full max-w-full overflow-hidden">
-                <div className="w-full bg-accent rounded-md relative z-10 border transition-colors">
+            <div className="w-full relative">
+              <div className="relative w-full">
+                <div className="w-full bg-black/50 border border-neutral-700 rounded-md relative z-10 backdrop-blur-sm">
                   <PromptInput
-                    leftSlot={
-                      <FrameworkSelector
-                        value={framework}
-                        onChange={setFramework}
-                      />
-                    }
                     isLoading={isLoading}
                     value={prompt}
                     onValueChange={setPrompt}
                     onSubmit={handleSubmit}
-                    className="relative z-10 border-none bg-transparent shadow-none focus-within:border-gray-400 focus-within:ring-1 focus-within:ring-gray-200 transition-all duration-200 ease-in-out "
+                    className="relative z-10 border-none bg-transparent shadow-none"
                   >
-                    <PromptInputTextareaWithTypingAnimation />
+                    <PromptInputTextareaWithTypingAnimation placeholder="Describe your app idea..." />
                     <PromptInputActions>
                       <Button
                         variant={"ghost"}
                         size="sm"
                         onClick={handleSubmit}
                         disabled={isLoading || !prompt.trim()}
-                        className="h-7 text-xs"
+                        className="bg-neutral-800 hover:bg-neutral-700 text-white h-8 text-sm"
                       >
-                        <span className="hidden sm:inline">
-                          Start Creating ⏎
-                        </span>
-                        <span className="sm:hidden">Create ⏎</span>
+                        Create my app
                       </Button>
                     </PromptInputActions>
                   </PromptInput>
@@ -90,11 +81,7 @@ export default function Home() {
               </div>
             </div>
             <Examples setPrompt={setPrompt} />
-          
           </div>
-        </div>
-        <div className="border-t py-8 mx-0 sm:-mx-4">
-          <UserApps />
         </div>
       </main>
     </QueryClientProvider>
@@ -102,33 +89,46 @@ export default function Home() {
 }
 
 function Examples({ setPrompt }: { setPrompt: (text: string) => void }) {
+  const examplePrompts = [
+    {
+      text: "Fitness App",
+      prompt: "A fitness app that tracks workouts and nutrition.",
+    },
+    {
+      text: "Food Delivery",
+      prompt: "A food delivery app for local restaurants.",
+    },
+    { text: "Task Manager", prompt: "A simple task manager app." },
+    {
+      text: "E-commerce Storefront",
+      prompt: "An e-commerce storefront for a clothing brand.",
+    },
+    {
+      text: "Portfolio Website",
+      prompt: "A personal portfolio website for a designer.",
+    },
+    {
+      text: "Real Estate Platform",
+      prompt:
+        "A real estate platform to browse and search for property listings.",
+    },
+    {
+      text: "Learning Management System",
+      prompt: "A learning management system for online courses.",
+    },
+  ];
+
   return (
-    <div className="mt-2">
-      <div className="flex flex-wrap justify-center gap-2 px-2">
-        <ExampleButton
-          text="Dog Food Marketplace"
-          promptText="Build a dog food marketplace where users can browse and purchase premium dog food."
-          onClick={(text) => {
-            console.log("Example clicked:", text);
-            setPrompt(text);
-          }}
-        />
-        <ExampleButton
-          text="Personal Website"
-          promptText="Create a personal website with portfolio, blog, and contact sections."
-          onClick={(text) => {
-            console.log("Example clicked:", text);
-            setPrompt(text);
-          }}
-        />
-        <ExampleButton
-          text="Burrito B2B SaaS"
-          promptText="Build a B2B SaaS for burrito shops to manage inventory, orders, and delivery logistics."
-          onClick={(text) => {
-            console.log("Example clicked:", text);
-            setPrompt(text);
-          }}
-        />
+    <div className="mt-8">
+      <div className="flex flex-wrap justify-center gap-3">
+        {examplePrompts.map((example) => (
+          <ExampleButton
+            key={example.text}
+            text={example.text}
+            promptText={example.prompt}
+            onClick={() => setPrompt(example.prompt)}
+          />
+        ))}
       </div>
     </div>
   );

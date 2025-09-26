@@ -47,7 +47,7 @@ export default function AppWrapper({
         height: "100dvh",
       }}
     >
-      <div className="flex-1 overflow-hidden grid grid-cols-2">
+      <div className="flex-1 overflow-hidden grid grid-cols-[3fr_7fr]">
         <div className="h-full overflow-hidden flex flex-col">
           <QueryClientProvider client={queryClient}>
             <Chat
