@@ -11,7 +11,7 @@ import { UserButton } from "@stackframe/stack";
 import { UserApps } from "@/components/user-apps";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PromptInputTextareaWithTypingAnimation } from "@/components/prompt-input";
-import { Code2 } from "lucide-react";
+import Link from "next/link";
 
 const queryClient = new QueryClient();
 
@@ -27,36 +27,41 @@ export default function Home() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <main className="min-h-screen p-4 relative bg-[#111111] text-white">
-        <div
-          className="absolute inset-0 z-0 opacity-20"
-          style={{
-            backgroundImage:
-              "linear-gradient(white 2px, transparent 2px), linear-gradient(90deg, white 2px, transparent 2px)",
-            backgroundSize: "50px 50px",
-          }}
-        ></div>
-        <div className="absolute top-4 right-4 z-20">
-          <UserButton />
-        </div>
-
-        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen text-center">
-          <div className="absolute top-8 flex items-center gap-2 text-sm bg-black px-3 py-1 rounded-full">
-            <Code2 className="w-4 h-4" />
-            <span>Powered by Expo & NativeWind</span>
+      <main className="min-h-screen bg-[#111111] text-white">
+        <header className="p-4 flex justify-between items-center border-b border-neutral-800">
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              className="dark:invert"
+              src={LogoSvg}
+              alt="Qreatify Logo"
+              width={28}
+              height={28}
+            />
+            <h1 className="text-xl font-bold">Qreatify</h1>
+          </Link>
+          <nav className="hidden md:flex items-center gap-6 text-sm text-neutral-400">
+            <Link href="#" className="hover:text-white">FAQ</Link>
+            <Link href="#" className="hover:text-white">Blog</Link>
+            <Link href="#" className="hover:text-white">Pricing</Link>
+            <Link href="#" className="hover:text-white">Discord</Link>
+          </nav>
+          <div className="flex items-center gap-4">
+            <Button variant="outline" size="sm" className="bg-transparent border-neutral-700 hover:bg-neutral-800">Get free credits</Button>
+            <UserButton />
           </div>
+        </header>
 
-          <div className="w-full max-w-2xl px-4 mx-auto mt-[-100px]">
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tighter mb-4">
-              Prompt to Mobile App
+        <div className="py-20 md:py-32 text-center">
+           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter mb-4">
+              Build native mobile apps, fast.
             </h1>
-            <p className="text-lg text-neutral-400 mb-12">
-              Chat and get production-ready React Native App with AI.
+            <p className="text-lg text-neutral-400 max-w-3xl mx-auto mb-12">
+             Qreatify builds complete, cross-platform mobile apps using AI and React Native. 
+             Describe the mobile app you want to build...
             </p>
 
-            <div className="w-full relative">
-              <div className="relative w-full">
-                <div className="w-full bg-black/50 border border-neutral-700 rounded-md relative z-10 backdrop-blur-sm">
+            <div className="w-full max-w-2xl mx-auto px-4">
+                 <div className="w-full bg-black/50 border border-neutral-700 rounded-md relative z-10 backdrop-blur-sm">
                   <PromptInput
                     isLoading={isLoading}
                     value={prompt}
@@ -78,11 +83,15 @@ export default function Home() {
                     </PromptInputActions>
                   </PromptInput>
                 </div>
-              </div>
+              <Examples setPrompt={setPrompt} />
             </div>
-            <Examples setPrompt={setPrompt} />
-          </div>
         </div>
+
+        <div className="border-t border-neutral-800 py-16">
+            <h2 className="text-2xl font-bold text-center mb-8">Your Recent Projects</h2>
+            <UserApps />
+        </div>
+
       </main>
     </QueryClientProvider>
   );
@@ -103,18 +112,10 @@ function Examples({ setPrompt }: { setPrompt: (text: string) => void }) {
       text: "E-commerce Storefront",
       prompt: "An e-commerce storefront for a clothing brand.",
     },
-    {
-      text: "Portfolio Website",
-      prompt: "A personal portfolio website for a designer.",
-    },
-    {
+     {
       text: "Real Estate Platform",
       prompt:
         "A real estate platform to browse and search for property listings.",
-    },
-    {
-      text: "Learning Management System",
-      prompt: "A learning management system for online courses.",
     },
   ];
 
