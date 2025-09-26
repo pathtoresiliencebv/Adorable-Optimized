@@ -115,17 +115,25 @@ export default function Chat(props: {
           ))}
         </ChatContainer>
       </div>
-      <div className="flex-shrink-0 p-3 transition-all bg-background md:backdrop-blur-sm">
-        <PromptInputBasic
-          stop={handleStop}
-          input={input}
-          onValueChange={(value) => {
-            setInput(value);
-          }}
-          onSubmit={onSubmit}
-          onSubmitWithImages={onSubmitWithImages}
-          isGenerating={props.isLoading || chat?.state === "running"}
-        />
+      <div className="flex-shrink-0 bg-background md:backdrop-blur-sm">
+        <div className="p-3">
+            <PromptInputBasic
+            stop={handleStop}
+            input={input}
+            onValueChange={(value) => {
+                setInput(value);
+            }}
+            onSubmit={onSubmit}
+            onSubmitWithImages={onSubmitWithImages}
+            isGenerating={props.isLoading || chat?.state === "running"}
+            />
+        </div>
+        <div className="p-4 border-t">
+          <h2 className="font-semibold text-sm mb-2">Pending Tasks</h2>
+          <div className="text-xs text-muted-foreground">
+            Hier komt de takenlijst...
+          </div>
+        </div>
       </div>
     </div>
   );
