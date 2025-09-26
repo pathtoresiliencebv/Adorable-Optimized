@@ -34,12 +34,12 @@ export default function Home() {
       <main className="min-h-screen p-4 relative">
         <div className="flex w-full justify-between items-center">
           <h1 className="text-lg font-bold flex-1 sm:w-80">
-            <a href="https://www.freestyle.sh">freestyle.sh</a>
+            <a href="https://www.qreatify.io">Qreatify.io</a>
           </h1>
           <Image
             className="dark:invert mx-2"
             src={LogoSvg}
-            alt="Adorable Logo"
+            alt="Qreatify  Logo"
             width={36}
             height={36}
           />
@@ -90,19 +90,7 @@ export default function Home() {
               </div>
             </div>
             <Examples setPrompt={setPrompt} />
-            <div className="mt-8 mb-16">
-              <a
-                href="https://freestyle.sh"
-                className="border rounded-md px-4 py-2 mt-4 text-sm font-semibold transition-colors duration-200 ease-in-out cursor-pointer w-full max-w-72 text-center block"
-              >
-                <span className="block font-bold">
-                  By <span className="underline">freestyle.sh</span>
-                </span>
-                <span className="text-xs">
-                  JavaScript infrastructure for AI.
-                </span>
-              </a>
-            </div>
+          
           </div>
         </div>
         <div className="border-t py-8 mx-0 sm:-mx-4">
