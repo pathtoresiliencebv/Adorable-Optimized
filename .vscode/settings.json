@@ -1,4 +1,9 @@
 {
     "deno.enable": false,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "Codegeex.SidebarUI.LanguagePreference": "English",
+    "Codegeex.CommitMessage.LanguagePreference": "English",
+    "Codegeex.Chat.LanguagePreference": "English",
+    "Codegeex.Comment.LanguagePreference": "English",
+    "Codegeex.RepoIndex": true,
 }

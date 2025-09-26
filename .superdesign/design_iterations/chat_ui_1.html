@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat UI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="chat_theme_1.css">
+    <style>
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--background);
+            color: var(--foreground);
+        }
+        .header-btn {
+            background-color: var(--secondary);
+            border: 1px solid var(--border);
+            transition: background-color 150ms ease-out;
+        }
+        .header-btn:hover {
+            background-color: var(--muted);
+        }
+        .input-container {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+        }
+        .input-field {
+            background-color: transparent;
+            border: none;
+            color: var(--foreground);
+            width: 100%;
+            outline: none;
+        }
+        .send-btn {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            transition: transform 150ms ease-out;
+        }
+        .send-btn:hover {
+            transform: scale(1.05);
+        }
+        .tool-btn {
+            transition: background-color 200ms ease-out, transform 200ms ease-out;
+        }
+        .tool-btn:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+        .chat-bubble {
+            opacity: 0;
+            transform: translateY(10px);
+            animation: popIn 400ms ease-out forwards;
+        }
+        .chat-bubble-user {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            align-self: flex-end;
+        }
+        .chat-bubble-ai {
+            background-color: var(--secondary);
+            color: var(--secondary-foreground);
+            align-self: flex-start;
+        }
+        .typing-indicator span {
+            animation: typing-pulse 1.5s infinite ease-in-out;
+        }
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 300ms;
+        }
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 600ms;
+        }
+        @keyframes popIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes typing-pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen">
+
+    <!-- Header -->
+    <header class="flex items-center justify-between p-3 border-b border-border shadow-sm z-10">
+        <div class="flex items-center space-x-4">
+            <h1 class="text-lg font-bold">AI Learning Hub</h1>
+            <span class="text-xs font-medium px-2 py-1 rounded-md bg-secondary border border-border">Public</span>
+        </div>
+        <div class="flex items-center space-x-3">
+            <button class="header-btn px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-2">
+                <i data-lucide="download" class="w-4 h-4"></i>
+                <span>Download Project</span>
+            </button>
+            <button class="header-btn px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-2">
+                <i data-lucide="scan" class="w-4 h-4"></i>
+                <span>Scan QR</span>
+            </button>
+            <button class="header-btn px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-2 text-yellow-400">
+                <i data-lucide="star" class="w-4 h-4"></i>
+                <span>Upgrade to Pro</span>
+            </button>
+            <img src="https://i.pravatar.cc/40?u=alex" alt="User Avatar" class="w-9 h-9 rounded-full border-2 border-primary">
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" class="flex-1 flex flex-col items-center justify-center p-4 overflow-y-auto transition-opacity duration-500 ease-out">
+        <!-- This will be populated by JS -->
+    </main>
+
+    <!-- Footer / Input Area -->
+    <footer class="p-4 w-full max-w-4xl mx-auto">
+        <div class="input-container p-2 flex flex-col space-y-3">
+            <div class="flex items-center space-x-2">
+                <textarea id="prompt-input" rows="1" class="input-field p-2 text-base resize-none" placeholder="Type your message..."></textarea>
+                <button id="send-button" class="send-btn rounded-lg p-3 flex-shrink-0">
+                    <i data-lucide="send" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+        <div class="flex items-center justify-center space-x-4 mt-4">
+            <button class="tool-btn p-3 rounded-lg flex items-center space-x-2"><i data-lucide="mouse-pointer" class="w-5 h-5"></i><span>Select</span></button>
+            <button class="tool-btn p-3 rounded-lg flex items-center space-x-2"><i data-lucide="pen-tool" class="w-5 h-5"></i><span>Draw</span></button>
+            <button class="tool-btn p-3 rounded-lg"><i data-lucide="link" class="w-5 h-5"></i></button>
+            <button class="tool-btn p-3 rounded-lg"><i data-lucide="search" class="w-5 h-5"></i></button>
+        </div>
+    </footer>
+
+    <script>
+        const mainContent = document.getElementById('main-content');
+        const sendButton = document.getElementById('send-button');
+        const promptInput = document.getElementById('prompt-input');
+        let chatStarted = false;
+
+        // Function to add a message to the chat
+        function addMessage(content, isUser) {
+            const bubble = document.createElement('div');
+            bubble.className = `chat-bubble p-4 rounded-lg max-w-xl ${isUser ? 'chat-bubble-user' : 'chat-bubble-ai'}`;
+            bubble.textContent = content;
+            mainContent.appendChild(bubble);
+            mainContent.scrollTop = mainContent.scrollHeight;
+        }
+
+        // Function to show typing indicator
+        function showTyping() {
+            const typingBubble = document.createElement('div');
+            typingBubble.id = 'typing-indicator';
+            typingBubble.className = 'chat-bubble chat-bubble-ai typing-indicator flex items-center space-x-1';
+            typingBubble.innerHTML = '<span>●</span><span>●</span><span>●</span>';
+            mainContent.appendChild(typingBubble);
+            mainContent.scrollTop = mainContent.scrollHeight;
+        }
+
+        // Handle send button click
+        sendButton.addEventListener('click', () => {
+            const prompt = promptInput.value.trim();
+            if (prompt === '') return;
+
+            if (!chatStarted) {
+                mainContent.innerHTML = ''; // Clear the initial empty state
+                mainContent.classList.remove('justify-center');
+                mainContent.classList.add('justify-start', 'space-y-4');
+                chatStarted = true;
+            }
+
+            addMessage(prompt, true);
+            promptInput.value = '';
+            promptInput.style.height = 'auto';
+
+            // Simulate AI response
+            setTimeout(() => {
+                showTyping();
+            }, 500);
+
+            setTimeout(() => {
+                const typingIndicator = document.getElementById('typing-indicator');
+                if (typingIndicator) {
+                    mainContent.removeChild(typingIndicator);
+                }
+                addMessage("This is a simulated response based on your prompt. The layout now reflects the chat view.", false);
+            }, 2500);
+        });
+        
+        // Auto-resize textarea
+        promptInput.addEventListener('input', () => {
+            promptInput.style.height = 'auto';
+            promptInput.style.height = (promptInput.scrollHeight) + 'px';
+        });
+
+        // Initialize Lucide Icons
+        lucide.createIcons();
+    </script>
+
+</body>
+</html>

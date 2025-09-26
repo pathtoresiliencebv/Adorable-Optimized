@@ -1,0 +1,46 @@
+
+:root {
+  --background: oklch(0.12 0.01 230);
+  --foreground: oklch(0.95 0 0);
+  --card: oklch(0.18 0.01 230);
+  --card-foreground: oklch(0.95 0 0);
+  --popover: oklch(0.98 0 0);
+  --popover-foreground: oklch(0.12 0.01 230);
+  --primary: oklch(0.6 0.15 230);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.25 0.01 230);
+  --secondary-foreground: oklch(0.95 0 0);
+  --muted: oklch(0.22 0.01 230);
+  --muted-foreground: oklch(0.65 0 0);
+  --accent: oklch(0.7 0.15 160);
+  --accent-foreground: oklch(0.1 0 0);
+  --destructive: oklch(0.6 0.2 25);
+  --destructive-foreground: oklch(0.95 0 0);
+  --border: oklch(0.25 0.01 230);
+  --input: oklch(0.18 0.01 230);
+  --ring: oklch(0.6 0.15 230);
+  --chart-1: oklch(0.6 0.15 230);
+  --chart-2: oklch(0.7 0.15 160);
+  --chart-3: oklch(0.8 0.1 90);
+  --chart-4: oklch(0.7 0.2 50);
+  --chart-5: oklch(0.6 0.2 25);
+  --sidebar: oklch(0.12 0.01 230);
+  --sidebar-foreground: oklch(0.95 0 0);
+  --sidebar-primary: oklch(0.6 0.15 230);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.25 0.01 230);
+  --sidebar-accent-foreground: oklch(0.95 0 0);
+  --sidebar-border: oklch(0.25 0.01 230);
+  --sidebar-ring: oklch(0.6 0.15 230);
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Lora', serif;
+  --font-mono: 'Fira Code', monospace;
+  --radius: 0.75rem;
+  --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
+  --shadow: 0 1px 3px 0 hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
+  --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -2px hsl(0 0% 0% / 0.1);
+  --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.1), 0 4px 6px -4px hsl(0 0% 0% / 0.1);
+  --shadow-xl: 0 20px 25px -5px hsl(0 0% 0% / 0.1), 0 8px 10px -6px hsl(0 0% 0% / 0.1);
+  --shadow-2xl: 0 25px 50px -12px hsl(0 0% 0% / 0.25);
+  --spacing: 0.25rem;
+}

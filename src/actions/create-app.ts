@@ -1,12 +1,13 @@
 "use server";
 
 import { getUser } from "@/auth/stack-auth";
-import { appsTable, appUsers } from "@/db/schema";
-import { db } from "@/db/schema";
 import { freestyle } from "@/lib/freestyle";
 import { templates } from "@/lib/templates";
 import { memory, builderAgent } from "@/mastra/agents/builder";
 import { sendMessageWithStreaming } from "@/lib/internal/stream-manager";
+import { cloudstate } from "freestyle-sh";
+import { App } from "@/cloudstate/models";
+import { v4 as uuidv4 } from 'uuid';
 
 export async function createApp({
   initialMessage,
@@ -21,7 +22,9 @@ export async function createApp({
 
   if (!templates[templateId]) {
     throw new Error(
-      `Template ${templateId} not found. Available templates: ${Object.keys(templates).join(", ")}`
+      `Template ${templateId} not found. Available templates: ${Object.keys(
+        templates
+      ).join(", ")}`
     );
   }
 
@@ -43,7 +46,6 @@ export async function createApp({
   const token = await freestyle.createGitAccessToken({
     identityId: user.freestyleIdentity,
   });
-
   console.timeEnd("git");
 
   console.time("dev server");
@@ -52,56 +54,49 @@ export async function createApp({
   });
   console.timeEnd("dev server");
 
-  console.time("database: create app");
-  const app = await db.transaction(async (tx) => {
-    const appInsertion = await tx
-      .insert(appsTable)
-      .values({
-        gitRepo: repo.repoId,
-        name: initialMessage,
-      })
-      .returning();
+  console.time("cloudstate: create app");
+  const appId = uuidv4();
+  const AppCS = cloudstate.get(App, { id: appId });
+  
+  await AppCS.init(appId, initialMessage || "Unnamed App", "No description", repo.repoId, templateId);
+  await AppCS.setAdmin(user.userId, user.freestyleIdentity, token.token, token.id);
 
-    await tx
-      .insert(appUsers)
-      .values({
-        appId: appInsertion[0].id,
-        userId: user.userId,
-        permissions: "admin",
-        freestyleAccessToken: token.token,
-        freestyleAccessTokenId: token.id,
-        freestyleIdentity: user.freestyleIdentity,
-      })
-      .returning();
+  const appInfo = {
+      id: appId,
+      name: await AppCS.name,
+      gitRepo: await AppCS.gitRepo
+  }
+  console.timeEnd("cloudstate: create app");
 
-    return appInsertion[0];
-  });
-  console.timeEnd("database: create app");
 
   console.time("mastra: create thread");
   await memory.createThread({
-    threadId: app.id,
-    resourceId: app.id,
+    threadId: appInfo.id,
+    resourceId: appInfo.id,
   });
   console.timeEnd("mastra: create thread");
 
   if (initialMessage) {
     console.time("send initial message");
+    
+    const message = {
+        id: crypto.randomUUID(),
+        parts: [
+            {
+                text: initialMessage,
+                type: "text",
+            },
+        ],
+        role: "user",
+    };
+
+    await AppCS.addMessage(message);
 
     // Send the initial message using the same infrastructure as the chat API
-    await sendMessageWithStreaming(builderAgent, app.id, mcpEphemeralUrl, fs, {
-      id: crypto.randomUUID(),
-      parts: [
-        {
-          text: initialMessage,
-          type: "text",
-        },
-      ],
-      role: "user",
-    });
+    await sendMessageWithStreaming(builderAgent, appInfo.id, mcpEphemeralUrl, fs, message);
 
     console.timeEnd("send initial message");
   }
 
-  return app;
+  return appInfo;
 }
